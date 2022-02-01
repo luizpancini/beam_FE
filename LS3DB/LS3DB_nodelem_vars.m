@@ -174,7 +174,7 @@ for e=1:Ne
     Izz_of_xi{e} = @(xi) indexat(Izz(x(xi)),beam{e});
     Ksy_of_xi{e} = @(xi) indexat(Ksy(x(xi)),beam{e});
     Ksz_of_xi{e} = @(xi) indexat(Ksz(x(xi)),beam{e});
-    Gamx_of_xi{e} = @(xi) min([L0{e}*10^(5-enn) sqrt(G_of_xi{e}(xi).*J_of_xi{e}(xi)./(E_of_xi{e}(xi).*Gamma_of_xi{e}(xi)))]); % Limited, because may become infinite
+    Gamx_of_xi{e} = @(xi) zeros(length(xi),1); 
     Gamy_of_xi{e} = @(xi) E_of_xi{e}(xi).*Izz_of_xi{e}(xi)./(Ksy_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     Gamz_of_xi{e} = @(xi) E_of_xi{e}(xi).*Iyy_of_xi{e}(xi)./(Ksz_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     % Element distributed loads as functions of the parent coordinate xi

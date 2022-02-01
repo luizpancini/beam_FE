@@ -118,9 +118,9 @@ if FEMdata.warp_DOF
                                       0                 0                                                              0                                                              J^-1*dpsi{2*i-1}(xi,h_e,Gamx(xi))   0                                                           0                                                                J^-1*dpsi{2*i}(xi,h_e,Gamx(xi))                        
                                       0                 0                                                              J^-1*dphi{2*i-1}(xi,h_e,Gamz(xi))                              0                                   J^-1*dphi{2*i}(xi,h_e,Gamz(xi))                             0                                                                                              0
                                       0                 J^-1*dphi{2*i-1}(xi,h_e,Gamy(xi))                              0                                                              0                                   0                                                           -J^-1*dphi{2*i}(xi,h_e,Gamy(xi))                                                               0
-                                      0                 0                                                      0                                                       J^-2*d2psi{2*i-1}(xi,h_e,Gamx(xi))  0                                                                          0                                                               J^-2*d2psi{2*i}(xi,h_e,Gamx(xi))];
-    B_cf = @(i,xi,h_e,J,Gamy,Gamz) [0 phi{2*i-1}(xi,h_e,Gamy(xi))   0                           0 0                         phi{2*i}(xi,h_e,Gamy(xi)) 0
-                                    0 0                             phi{2*i-1}(xi,h_e,Gamz(xi)) 0 phi{2*i}(xi,h_e,Gamz(xi)) 0                         0];
+                                      0                 0                                                              0                                                              J^-2*d2psi{2*i-1}(xi,h_e,Gamx(xi))  0                                                           0                                                               J^-2*d2psi{2*i}(xi,h_e,Gamx(xi))];
+    B_cf = @(i,xi,h_e,J,Gamy,Gamz) [0 psi{2*i-1}(xi,h_e,Gamy(xi))   0                           0 0                         psi{2*i}(xi,h_e,Gamy(xi)) 0
+                                    0 0                             psi{2*i-1}(xi,h_e,Gamz(xi)) 0 psi{2*i}(xi,h_e,Gamz(xi)) 0                         0];
     % Vector of shape functions for distributed loads
     H_dist = @(i,xi,h_e,Gamx,Gamy,Gamz) [zeta{i}(xi); psi{2*i-1}(xi,h_e,Gamy(xi)); psi{2*i-1}(xi,h_e,Gamz(xi)); psi{2*i-1}(xi,h_e,Gamx(xi)); psi{2*i}(xi,h_e,Gamz(xi)); psi{2*i}(xi,h_e,Gamy(xi)); psi{2*i}(xi,h_e,Gamx(xi))];
     % Vectors of distributed forces
@@ -138,8 +138,8 @@ else
                                       0                 0                                                               0                                                               J^-1*dzeta{i}(xi)   0                                                                                                                      0                          
                                       0                 0                                                               J^-1*dphi{2*i-1}(xi,h_e,Gamz(xi))                               0                   J^-1*dphi{2*i}(xi,h_e,Gamz(xi))                                                                                        0
                                       0                 J^-1*dphi{2*i-1}(xi,h_e,Gamy(xi))                               0                                                               0                   0                                                                                      -J^-1*dphi{2*i}(xi,h_e,Gamy(xi))];
-    B_cf = @(i,xi,h_e,J,Gamy,Gamz) [0 phi{2*i-1}(xi,h_e,Gamy(xi))  0                            0 0                         phi{2*i}(xi,h_e,Gamy(xi))
-                                    0 0                            phi{2*i-1}(xi,h_e,Gamz(xi))  0 phi{2*i}(xi,h_e,Gamz(xi))                        0];
+    B_cf = @(i,xi,h_e,J,Gamy,Gamz) [0 psi{2*i-1}(xi,h_e,Gamy(xi))  0                            0 0                         psi{2*i}(xi,h_e,Gamy(xi))
+                                    0 0                            psi{2*i-1}(xi,h_e,Gamz(xi))  0 psi{2*i}(xi,h_e,Gamz(xi))                        0];
     % Vector of shape functions for distributed loads
     H_dist = @(i,xi,h_e,Gamx,Gamy,Gamz) [zeta{i}(xi); psi{2*i-1}(xi,h_e,Gamy(xi)); psi{2*i-1}(xi,h_e,Gamz(xi)); zeta{i}(xi); psi{2*i}(xi,h_e,Gamz(xi)); psi{2*i}(xi,h_e,Gamy(xi))];    
     % Vectors of distributed loads
