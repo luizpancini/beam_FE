@@ -162,7 +162,7 @@ for e=1:Ne
     Izz_of_x{e} = @(x) indexat(Izz(x),beam{e});
     Ksy_of_x{e} = @(x) indexat(Ksy(x),beam{e});
     Ksz_of_x{e} = @(x) indexat(Ksz(x),beam{e});
-    Gamx_of_x{e} = @(x) min([L0{e}*10^(5-enn) sqrt(G_of_x{e}(x).*J_of_x{e}(x)./(E_of_x{e}(x).*Gamma_of_x{e}(x)))]); % Limited, because may become infinite
+    Gamx_of_x{e} = @(x) 0;
     Gamy_of_x{e} = @(x) E_of_x{e}(x).*Izz_of_x{e}(x)./(Ksy_of_x{e}(x).*G_of_x{e}(x).*A_of_x{e}(x)*L0{e}^2);
     Gamz_of_x{e} = @(x) E_of_x{e}(x).*Iyy_of_x{e}(x)./(Ksz_of_x{e}(x).*G_of_x{e}(x).*A_of_x{e}(x)*L0{e}^2);
     % Element constitutive properties as functions of the parent coordinate xi
@@ -176,7 +176,7 @@ for e=1:Ne
     Izz_of_xi{e} = @(xi) indexat(Izz(x(xi)),beam{e});
     Ksy_of_xi{e} = @(xi) indexat(Ksy(x(xi)),beam{e});
     Ksz_of_xi{e} = @(xi) indexat(Ksz(x(xi)),beam{e});
-    Gamx_of_xi{e} = @(xi)  min([L0{e}*10^(5-enn) sqrt(G_of_xi{e}(xi).*J_of_xi{e}(xi)./(E_of_xi{e}(xi).*Gamma_of_xi{e}(xi)))]); 
+    Gamx_of_xi{e} = @(xi) 0; 
     Gamy_of_xi{e} = @(xi) E_of_xi{e}(xi).*Izz_of_xi{e}(xi)./(Ksy_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     Gamz_of_xi{e} = @(xi) E_of_xi{e}(xi).*Iyy_of_xi{e}(xi)./(Ksz_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     % Element distributed loads as functions of the parent coordinate xi

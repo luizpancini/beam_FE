@@ -52,9 +52,9 @@ for e=1:Ne
         dphiy_interp_fun = @(x) dphiy_interp_fun(x) - Jac^-1*(u_local(DOF_w(n))*dphi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*dphi{2*n}(xi(x),L0,Gamz(x)));
         dphiz_interp_fun = @(x) dphiz_interp_fun(x) - Jac^-1*(u_local(DOF_v(n))*dphi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*dphi{2*n}(xi(x),L0,Gamy(x)));
         if warp_DOF
-            dphix_interp_fun = @(x) dphix_interp_fun(x) + Jac^-1*(u_local(DOF_phix(2*n-1))*dpsi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*dpsi{2*n}(xi(x),L0,Gamx(x)));
-            d2phix_interp_fun = @(x) d2phix_interp_fun(x) + Jac^-2*(u_local(DOF_phix(2*n-1))*d2psi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*d2psi{2*n}(xi(x),L0,Gamx(x)));
-            d3phix_interp_fun = @(x) d3phix_interp_fun(x) + Jac^-3*(u_local(DOF_phix(2*n-1))*d3psi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*d3psi{2*n}(xi(x),L0,Gamx(x)));
+            dphix_interp_fun = @(x) dphix_interp_fun(x) - (u_local(DOF_phix(2*n-1))*phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*phi{2*n}(xi(x),L0,Gamx(x)));
+            d2phix_interp_fun = @(x) d2phix_interp_fun(x) - Jac^-1*(u_local(DOF_phix(2*n-1))*dphi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*dphi{2*n}(xi(x),L0,Gamx(x)));
+            d3phix_interp_fun = @(x) d3phix_interp_fun(x) - Jac^-2*(u_local(DOF_phix(2*n-1))*d2phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*d2phi{2*n}(xi(x),L0,Gamx(x)));
         else
             dphix_interp_fun = @(x) dphix_interp_fun(x) + Jac^-1*(u_local(DOF_phix(n))*dzeta{n}(xi(x)));
         end
@@ -73,8 +73,8 @@ for e=1:Ne
                 My_interp_fun = @(x) E(x).*Iyy(x).*dphiy_interp_fun(x);
                 Mz_interp_fun = @(x) E(x).*Izz(x).*dphiz_interp_fun(x);
             end
-            Tq_interp_fun = @(x) G(x).*J(x).*dphix_interp_fun(x) - E(x).*Gamma(x).*d3phix_interp_fun(x);
-            Bm_interp_fun = @(x) E(x).*Gamma(x).*d2phix_interp_fun(x);
+            Tq_interp_fun = @(x) -(G(x).*J(x).*dphix_interp_fun(x) - E(x).*Gamma(x).*d3phix_interp_fun(x));
+            Bm_interp_fun = @(x) -E(x).*Gamma(x).*d2phix_interp_fun(x);
         end
     end
     

@@ -121,7 +121,18 @@ end
 
 %% Check inputs
 if beam_theory == "EB", Ksy = @(x) 1e9*ones(N_beams,1); Ksz = @(x) 1e9*ones(N_beams,1); end % No shear flexibility in the Euler-Bernoulli theory
-
+if warp_DOF 
+    indexat = @(expr, index) expr(index); % To get specific element index
+    if element_order == "linear", max_ratio = 1; tip = 1; elseif element_order == "quadratic", max_ratio = 1e1; tip = 0; end
+    for b=1:N_beams
+        ratio = indexat(G(L(b)/2),b)*indexat(J(L(b)/2),b)/(indexat(E(L(b)/2),b)*indexat(Gamma(L(b)/2),b)) / Ne_b(b);
+        if round(ratio,1) > max_ratio % If the ratio GJ/EGam is very high
+            if tip, tips = ", or increasing the element order"; else, tips = ""; end
+            warning("Ratio GJ/E*Gam very high for beam " + num2str(b) + " - results for internal torque may be innaccurate. Consider increasing the number of elements, or setting warp_DOF to zero" + tips);
+        end
+    end
+end
+    
 if FEMdata.elem_connect == "unsequenced" 
     if ~exist('elem_nodes','var')
         error('Specify the elem_nodes matrix, with each row containing the nodes of that corresponding element');

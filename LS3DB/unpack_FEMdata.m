@@ -175,7 +175,6 @@ else % Unpack specific data for function
             varargout = {warp_DOF,edof,enn,DOF_u,DOF_phix,DOF_bendl,DOF_bendt,H_psi,H_phi,H_zeta};
         case 'bcs'
               % General data
-              warp_DOF = FEMdata.warp_DOF;
               BC_nodes = FEMdata.BC_nodes;
               N_nodes = FEMdata.N_nodes;
               ndof = FEMdata.ndof;
@@ -186,7 +185,7 @@ else % Unpack specific data for function
               DOF_bendl = FEMdata.DOF_bendl;
               DOF_bendt = FEMdata.DOF_bendt;
               % Outputs:
-              varargout = {warp_DOF,BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_phix,DOF_bendl,DOF_bendt};
+              varargout = {BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_phix,DOF_bendl,DOF_bendt};
           case 'outputs'
               % General data
               beam_theory = FEMdata.beam_theory;

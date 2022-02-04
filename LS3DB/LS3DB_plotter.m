@@ -58,7 +58,7 @@ plot_generalized_output('Vz','plot_Vz',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$V
 plot_generalized_output('Tq','plot_Tq',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$T$ [" + unit_sys.force + "." + unit_sys.length + "]",plot_opt); % Twisting torque
 plot_generalized_output('My','plot_My',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$M_y$ [" + unit_sys.force + "." + unit_sys.length + "]",plot_opt); % Transverse bending moment
 plot_generalized_output('Mz','plot_Mz',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$M_z$ [" + unit_sys.force + "." + unit_sys.length + "]",plot_opt); % Lateral bending moment
-if warp_DOF, plot_generalized_output('Bm','plot_Bm',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$B_{\omega}$ [" + unit_sys.force + "." + unit_sys.length + "]",plot_opt); end % Bimoment
+if warp_DOF, plot_generalized_output('Bm','plot_Bm',tabgp,Ne,N_beams,edata,SOLdata,xLabel,"$B_{\omega}$ [" + unit_sys.force + "." + unit_sys.length + "$^{2}$]",plot_opt); end % Bimoment
 
 %% Nested functions
 

@@ -10,7 +10,7 @@ unit_sys = "SI-N.m";  % Choose between SI-N.m, SI-kN.m, E-lb.in, E-lb.ft
 beam_theory = "T";    % Choose between "EB" (Euler-Bernoulli) or "T" (Timoshenko)
 % Problem parameters 
 E0 = 200e9; nu0 = 0.3; G0 = E0/(2*(1+nu0)); 
-L0 = 1; b = 0.01; H = 0.01; A0 = b*H; Izz0 = H*b^3/12; Iyy0 = b*H^3/12; I0 = Iyy0+Izz0; J0 = 0.025*A0^4/I0; Gamma0 = 0/E0; Ks0y = 5/6; Ks0z = 5/6; 
+L0 = 1; b = 0.01; H = 0.01; A0 = b*H; Izz0 = H*b^3/12; Iyy0 = b*H^3/12; I0 = Iyy0+Izz0; J0 = 0.025*A0^4/I0; Gamma0 = 10/E0; Ks0y = 5/6; Ks0z = 5/6; 
 P0 = 10; q0 = 10; T0 = 10; k0 = 1e-0*E0*I0;
 % Geometry 
 N_beams = 3;                                        % Number of beam segments (not the same as elements, e.g., one segment may have several elements)
@@ -43,10 +43,10 @@ Pt{3} = [-P0/4; P0/2];  apt{3} = [L0; L0/2];
 Tq{1} = [T0];           atq{1} = [L0/2];
 Mz{2} = [T0];           amz{2} = [.85*L0];
 % Option for warping DOF (1 for true or 0 for false)
-warp_DOF = 0;
+warp_DOF = 1;
 % Set elements data
-Ne_b = 4*ones(N_beams,1);          % Number of elements of each beam
-element_order = "linear";          % Choose between "linear" or "quadratic"
+Ne_b = 10*ones(N_beams,1);          % Number of elements of each beam
+element_order = "quadratic";          % Choose between "linear" or "quadratic"
 elem_connect = "sequenced";        % Choose between "sequenced" (beams are connected one after the other) or "unsequenced". If unsequenced, specify the matrix "elem_nodes" below, containing as many rows as elements and as many columns as nodes/element
 % Specify geometrical global frame BCs at nodes as a node-BCs tuple (e.g., BC_nodes = {[1, "C"], [2, "SS"], [3, "R1"], [4, "R25", 1e-3, 2e-3], specifies node 1 to be clamped, node 2 to be "simply supported", node 3 to have DOF 1 equal to zero, and node 4 to have its DOFs 2 and 5 set to the values of 1e-3 and 2e-3})
 BC_nodes = {[1, "C"]}; 
