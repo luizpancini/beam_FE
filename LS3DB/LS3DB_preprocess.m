@@ -20,6 +20,7 @@ FEMdata.element_order = element_order;
 FEMdata.elem_connect = elem_connect;        
 FEMdata.BC_nodes = BC_nodes; 
 FEMdata.scale = scale;           
+if exist('elem_nodes','var'), FEMdata.elem_nodes = elem_nodes; end
 
 %% If loads/sources not input, set default (empty/zero) values
 def_cell = cell(N_beams,1); def_cell(:) = {[]};

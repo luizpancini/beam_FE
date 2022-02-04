@@ -75,6 +75,8 @@ if FEMdata.elem_connect == "sequenced"
 else % Unsequenced, so check for errors
     if size(FEMdata.elem_nodes,2) ~= enn
         error("Specify exactly " + num2str(enn) + " nodes per " + element_order + " element in the matrix elem_nodes");
+    else
+        elem_nodes = FEMdata.elem_nodes;    
     end
 end
 % Total number of elements, nodes and DOFs
@@ -174,7 +176,7 @@ for e=1:Ne
     Izz_of_xi{e} = @(xi) indexat(Izz(x(xi)),beam{e});
     Ksy_of_xi{e} = @(xi) indexat(Ksy(x(xi)),beam{e});
     Ksz_of_xi{e} = @(xi) indexat(Ksz(x(xi)),beam{e});
-    Gamx_of_xi{e} = @(xi) zeros(length(xi),1); 
+    Gamx_of_xi{e} = @(xi)  min([L0{e}*10^(5-enn) sqrt(G_of_xi{e}(xi).*J_of_xi{e}(xi)./(E_of_xi{e}(xi).*Gamma_of_xi{e}(xi)))]); 
     Gamy_of_xi{e} = @(xi) E_of_xi{e}(xi).*Izz_of_xi{e}(xi)./(Ksy_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     Gamz_of_xi{e} = @(xi) E_of_xi{e}(xi).*Iyy_of_xi{e}(xi)./(Ksz_of_xi{e}(xi).*G_of_xi{e}(xi).*A_of_xi{e}(xi)*L0{e}^2);
     % Element distributed loads as functions of the parent coordinate xi
