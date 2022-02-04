@@ -1,7 +1,7 @@
 function FEMdata = LS3DB_apply_BCs(FEMdata)
 
 % Unpack FEM data
-[BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_phix,DOF_bendl,DOF_bendt] = unpack_FEMdata(FEMdata,'bcs');
+[warp_DOF,BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_phix,DOF_bendl,DOF_bendt] = unpack_FEMdata(FEMdata,'bcs');
 
 %% Apply BCs
 % Loop over BCs
@@ -23,8 +23,12 @@ for i=1:length(BC_nodes)
         DOFs_to_BC = EDOFs{1};
         BCed_dofs = node_DOFs(DOFs_to_BC);                                         
         DOFs_values = zeros(length(BCed_dofs),1);
-    elseif BC_type == "SS"                                                  % Simple support: restrict all displacements and rotation
-        DOFs_to_BC = [DOF_u(1) DOF_phix(1) DOF_bendl(1) DOF_bendt(1)];
+    elseif BC_type == "SS"                                                  % Simple support: restrict all displacements, twist rotation and warping
+        if warp_DOF
+            DOFs_to_BC = [DOF_u(1) DOF_bendl(1) DOF_bendt(1) DOF_phix(1:2)];
+        else
+            DOFs_to_BC = [DOF_u(1) DOF_bendl(1) DOF_bendt(1) DOF_phix(1)];
+        end
         BCed_dofs = node_DOFs(DOFs_to_BC); 
         DOFs_values = zeros(length(BCed_dofs),1);
     elseif BC_type == "R"                                                   % Restrict DOF # to specified values
