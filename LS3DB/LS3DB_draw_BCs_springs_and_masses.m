@@ -175,17 +175,17 @@ plot_mass(ama,x_interp,R0,x0b,y0b,z0b,L);
                         plot_DOF_cone("z",X,Y,Z,L);
                     case 4
                         plot_DOF_cone("x",X,Y,Z,L);
-                        plot_DOF_cone("x",X+2*pi*L/10,Y,Z,L);
+                        plot_DOF_cone("x",X+2*pi*L/200,Y,Z,L);
                     case 5
                         plot_DOF_cone("y",X,Y,Z,L);
-                        plot_DOF_cone("y",X,Y+2*pi*L/10,Z,L);
+                        plot_DOF_cone("y",X,Y+2*pi*L/200,Z,L);
                     case 6
                         plot_DOF_cone("z",X,Y,Z,L);
-                        plot_DOF_cone("z",X,Y,Z+2*pi*L/10,L);
+                        plot_DOF_cone("z",X,Y,Z+2*pi*L/200,L);
                     case 7
                         plot_DOF_cone("x",X,Y,Z,L);
-                        plot_DOF_cone("x",X+2*pi*L/10,Y,Z,L);
-                        plot_DOF_cone("x",X+4*pi*L/10,Y,Z,L);
+                        plot_DOF_cone("x",X+2*pi*L/200,Y,Z,L);
+                        plot_DOF_cone("x",X+4*pi*L/200,Y,Z,L);
                 end
             end
         end
