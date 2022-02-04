@@ -45,8 +45,8 @@ Mz{2} = [T0];           amz{2} = [.85*L0];
 % Option for warping DOF (1 for true or 0 for false)
 warp_DOF = 1;
 % Set elements data
-Ne_b = 10*ones(N_beams,1);          % Number of elements of each beam
-element_order = "quadratic";          % Choose between "linear" or "quadratic"
+Ne_b = 10*ones(N_beams,1);         % Number of elements of each beam
+element_order = "quadratic";       % Choose between "linear" or "quadratic"
 elem_connect = "sequenced";        % Choose between "sequenced" (beams are connected one after the other) or "unsequenced". If unsequenced, specify the matrix "elem_nodes" below, containing as many rows as elements and as many columns as nodes/element
 % Specify geometrical global frame BCs at nodes as a node-BCs tuple (e.g., BC_nodes = {[1, "C"], [2, "SS"], [3, "R1"], [4, "R25", 1e-3, 2e-3], specifies node 1 to be clamped, node 2 to be "simply supported", node 3 to have DOF 1 equal to zero, and node 4 to have its DOFs 2 and 5 set to the values of 1e-3 and 2e-3})
 BC_nodes = {[1, "C"]}; 
