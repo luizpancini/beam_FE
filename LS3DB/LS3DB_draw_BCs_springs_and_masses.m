@@ -21,7 +21,7 @@ for n=1:length(BC_nodes)
         elseif BC_type == "SS" 
             plot_support(e_node_range,local_node,alpha,beta,gamma,P,L);
         else % BC_type = "R": Specified DOF value
-            plot_BCed_DOF(BC_nodes{n},X,Y,Z,bcs);
+            plot_BCed_DOF(BC_nodes{n},X,Y,Z,L);
         end
     end
 end
@@ -156,7 +156,7 @@ plot_mass(ama,x_interp,R0,x0b,y0b,z0b,L);
         % Clamped base starting point
         P0 = P0 + size*R(:,1);
         % Plot clamped base
-        plot_clamped_base(P0,R,size)
+        plot_clamped_base(P0,R,L)
     end
     
     %% Plot BC'ed DOF
