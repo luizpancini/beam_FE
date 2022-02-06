@@ -71,6 +71,8 @@ if ~exist('CSu','var'), CSu = def_cell; else, CSu(end+1:N_beams) = {[]}; CSu = C
 if ~exist('CSv','var'), CSv = def_cell; else, CSv(end+1:N_beams) = {[]}; CSv = CSv'; end; FEMdata.sources.CSv = CSv;
 if ~exist('CSw','var'), CSw = def_cell; else, CSw(end+1:N_beams) = {[]}; CSw = CSw'; end; FEMdata.sources.CSw = CSw;
 if ~exist('CSt','var'), CSt = def_cell; else, CSt(end+1:N_beams) = {[]}; CSt = CSt'; end; FEMdata.sources.CSt = CSt;
+if ~exist('CSbl','var'), CSbl = def_cell; else, CSbl(end+1:N_beams) = {[]}; CSbl = CSbl'; end; FEMdata.sources.CSbl = CSbl;
+if ~exist('CSbt','var'), CSbt = def_cell; else, CSbt(end+1:N_beams) = {[]}; CSbt = CSbt'; end; FEMdata.sources.CSbt = CSbt;
 % Concentraded sources positions 
 if ~exist('akx','var'), akx = def_cell; else, akx(end+1:N_beams) = {[]}; akx = akx'; end; FEMdata.sources.akx = akx;
 if ~exist('aky','var'), aky = def_cell; else, aky(end+1:N_beams) = {[]}; aky = aky'; end; FEMdata.sources.aky = aky;
@@ -79,6 +81,8 @@ if ~exist('aku','var'), aku = def_cell; else, aku(end+1:N_beams) = {[]}; aku = a
 if ~exist('akv','var'), akv = def_cell; else, akv(end+1:N_beams) = {[]}; akv = akv'; end; FEMdata.sources.akv = akv;
 if ~exist('akw','var'), akw = def_cell; else, akw(end+1:N_beams) = {[]}; akw = akw'; end; FEMdata.sources.akw = akw;
 if ~exist('akt','var'), akt = def_cell; else, akt(end+1:N_beams) = {[]}; akt = akt'; end; FEMdata.sources.akt = akt;
+if ~exist('akbl','var'), akbl = def_cell; else, akbl(end+1:N_beams) = {[]}; akbl = akbl'; end; FEMdata.sources.akbl = akbl;
+if ~exist('akbt','var'), akbt = def_cell; else, akbt(end+1:N_beams) = {[]}; akbt = akbt'; end; FEMdata.sources.akbt = akbt;
 % Distributed sources
 if ~exist('cfl_of_x','var'), cfl_of_x = def_fun; else, cfl_of_x(end+1:N_beams) = {@(x) 0}; cfl_of_x(cellfun(@isempty,cfl_of_x)) = {@(x) 0}; cfl_of_x = cfl_of_x'; end; FEMdata.sources.cfl_of_x = cfl_of_x;
 if ~exist('cft_of_x','var'), cft_of_x = def_fun; else, cft_of_x(end+1:N_beams) = {@(x) 0}; cft_of_x(cellfun(@isempty,cft_of_x)) = {@(x) 0}; cft_of_x = cft_of_x'; end; FEMdata.sources.cft_of_x = cft_of_x;
@@ -117,22 +121,15 @@ for b=1:FEMdata.N_beams
     if ~iscolumn(FEMdata.sources.aku{b}), FEMdata.sources.aku{b} = FEMdata.sources.aku{b}'; end
     if ~iscolumn(FEMdata.sources.akv{b}), FEMdata.sources.akv{b} = FEMdata.sources.akv{b}'; end
     if ~iscolumn(FEMdata.sources.akw{b}), FEMdata.sources.akw{b} = FEMdata.sources.akw{b}'; end
+    if ~iscolumn(FEMdata.sources.akt{b}), FEMdata.sources.akt{b} = FEMdata.sources.akt{b}'; end
+    if ~iscolumn(FEMdata.sources.akbl{b}), FEMdata.sources.akbl{b} = FEMdata.sources.akbl{b}'; end
+    if ~iscolumn(FEMdata.sources.akbt{b}), FEMdata.sources.akbt{b} = FEMdata.sources.akbt{b}'; end
 end
 
 %% Check inputs
-if beam_theory == "EB", Ksy = @(x) 1e9*ones(N_beams,1); Ksz = @(x) 1e9*ones(N_beams,1); end % No shear flexibility in the Euler-Bernoulli theory
-if warp_DOF 
-    indexat = @(expr, index) expr(index); % To get specific element index
-    if element_order == "linear", max_ratio = 1; tip = 1; elseif element_order == "quadratic", max_ratio = 1e1; tip = 0; end
-    for b=1:N_beams
-        ratio = indexat(G(L(b)/2),b)*indexat(J(L(b)/2),b)/(indexat(E(L(b)/2),b)*indexat(Gamma(L(b)/2),b)) / Ne_b(b);
-        if round(ratio,1) > max_ratio % If the ratio GJ/EGam is very high
-            if tip, tips = ", or increasing the element order"; else, tips = ""; end
-            warning("Ratio GJ/E*Gam very high for beam " + num2str(b) + " - results for internal torque may be innaccurate. Consider increasing the number of elements, or setting warp_DOF to zero" + tips);
-        end
-    end
-end
-    
+% No shear flexibility in the Euler-Bernoulli theory
+if beam_theory == "EB", Ksy = @(x) 1e9*ones(N_beams,1); Ksz = @(x) 1e9*ones(N_beams,1); end 
+% Check element connectivity
 if FEMdata.elem_connect == "unsequenced" 
     if ~exist('elem_nodes','var')
         error('Specify the elem_nodes matrix, with each row containing the nodes of that corresponding element');
@@ -142,9 +139,20 @@ if FEMdata.elem_connect == "unsequenced"
 elseif FEMdata.elem_connect ~= "sequenced" && FEMdata.elem_connect ~= "unsequenced"
     error('Specify elem_connect as sequenced or unsequenced');
 end
+% Check element number vector
 if size(FEMdata.Ne_b) ~= FEMdata.N_beams
     error('The size of the Ne_b vector must be equal to N_beams');
 end
+% Check GJ/EGam ratio
+if warp_DOF 
+    if element_order == "linear", max_ratio = 1; tip = 1; elseif element_order == "quadratic", max_ratio = 1e1; tip = 0; end
+    for b=1:N_beams
+        if round(G(L(b)/2)*J(L(b)/2)/(E(L(b)/2)*Gamma(L(b)/2))/Ne_b(b),1) > max_ratio % If the ratio GJ/EGam is very high
+            if tip, tip = ", or increasing the element order"; else, tip = ""; end
+            warning("Ratio GJ/E*Gam very high for beam " + num2str(b) + " - results for internal torque may be innaccurate. Consider increasing the number of elements, setting warp_DOF to zero" + tip);
+        end
+    end
+end    
 
 % Unit system
 if unit_sys == "SI-N.m"
@@ -186,6 +194,8 @@ check_loads_sources_inputs(CSu,aku,N_beams,L);
 check_loads_sources_inputs(CSv,akv,N_beams,L);
 check_loads_sources_inputs(CSw,akw,N_beams,L);
 check_loads_sources_inputs(CSt,akt,N_beams,L);
+check_loads_sources_inputs(CSbl,akbl,N_beams,L);
+check_loads_sources_inputs(CSbt,akbt,N_beams,L);
 
 %% Functions
 function check_loads_sources_inputs(P,a,N_beams,L)

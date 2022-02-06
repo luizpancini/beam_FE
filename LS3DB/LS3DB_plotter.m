@@ -1,7 +1,7 @@
 function LS3DB_plotter(edata,FEMdata,SOLdata)
 
 % Unpack FEM data
-[unit_sys,warp_DOF,N_beams,L,b_alpha,b_beta,b_gamma,BC_nodes,scale,Ne,Px,Py,Pz,Mx,My,Mz,Pa,Pl,Pt,Tq,Ml,Mt,Bm,apx,apy,apz,amx,amy,amz,apa,apl,apt,atq,aml,amt,abm,fa_of_x,tq_of_x,ql_of_x,qt_of_x,fx_of_x,mx_of_x,qy_of_x,qz_of_x,bm_of_x,akx,aky,akz,aku,akv,akw,akt,cfl,cft] = unpack_FEMdata(FEMdata,'plots');
+[unit_sys,warp_DOF,N_beams,L,b_alpha,b_beta,b_gamma,BC_nodes,scale,Ne,Px,Py,Pz,Mx,My,Mz,Pa,Pl,Pt,Tq,Ml,Mt,Bm,apx,apy,apz,amx,amy,amz,apa,apl,apt,atq,aml,amt,abm,fa_of_x,tq_of_x,ql_of_x,qt_of_x,fx_of_x,mx_of_x,qy_of_x,qz_of_x,bm_of_x,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,cfl,cft] = unpack_FEMdata(FEMdata,'plots');
 
 %% Plot style - default settings
 set(0,'DefaultTextInterpreter','latex')
@@ -33,7 +33,7 @@ for e=1:Ne
     % Plot structure  
     plot3(x_und_nodes,y_und_nodes,z_und_nodes,'ko--',x_def_nodes,y_def_nodes,z_def_nodes,'bo',x_def_interp,y_def_interp,z_def_interp,'b-','LineWidth',plot_opt.lw,'MarkerSize',plot_opt.ms,'Parent',axes0);
     % Plot BCs
-    BC_nodes = LS3DB_draw_BCs_springs_and_masses(BC_nodes,e_node_range,L(beam),R0,b_alpha(beam),b_beta(beam),b_gamma(beam),cfl{beam},cft{beam},akx{beam},aky{beam},akz{beam},aku{beam},akv{beam},akw{beam},akt{beam},[],x0,y0,z0,x_vec_interp,x_und_nodes,y_und_nodes,z_und_nodes);
+    BC_nodes = LS3DB_draw_BCs_springs(BC_nodes,e_node_range,L(beam),R0,b_alpha(beam),b_beta(beam),b_gamma(beam),cfl{beam},cft{beam},akx{beam},aky{beam},akz{beam},aku{beam},akv{beam},akw{beam},akt{beam},akbl{beam},akbt{beam},x0,y0,z0,x_vec_interp,x_und_nodes,y_und_nodes,z_und_nodes);
     % Plot loads
     LS3DB_draw_loads(L(beam),R0,fx_of_x{beam},qy_of_x{beam},qz_of_x{beam},mx_of_x{beam},fa_of_x{beam},ql_of_x{beam},qt_of_x{beam},tq_of_x{beam},bm_of_x{beam},Px{beam},Py{beam},Pz{beam},Mx{beam},My{beam},Mz{beam},Pa{beam},Pl{beam},Pt{beam},Ml{beam},Mt{beam},Tq{beam},Bm{beam},apx{beam},apy{beam},apz{beam},amx{beam},amy{beam},amz{beam},apa{beam},apl{beam},apt{beam},aml{beam},amt{beam},atq{beam},abm{beam},x_vec_interp,x_und_cont,y_und_cont,z_und_cont,x0,y0,z0);
 end

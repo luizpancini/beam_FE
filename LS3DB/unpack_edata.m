@@ -85,6 +85,8 @@ if isempty(varargin) % Unpack all data
     CSv_of_xi = edata.CSv_of_xi{e};
     CSw_of_xi = edata.CSw_of_xi{e};
     CSt_of_xi = edata.CSt_of_xi{e};
+    CSbl_of_xi = edata.CSbl_of_xi{e};
+    CSbt_of_xi = edata.CSbt_of_xi{e};
     % Concentraded loads positions (xi)
     xi_apx = edata.xi_apx{e};
     xi_apy = edata.xi_apy{e};
@@ -107,8 +109,10 @@ if isempty(varargin) % Unpack all data
     xi_akv = edata.xi_akv{e};
     xi_akw = edata.xi_akw{e};
     xi_akt = edata.xi_akt{e};
+    xi_akbl = edata.xi_akbl{e};
+    xi_akbt = edata.xi_akbt{e};
     % Outputs:
-    varargout = {e_dof_range,e_node_range,L0,x1,beam,e_on_beam,R0,T0,Jac,x_vec_nodes,x_vec_interp,x0,y0,z0,x_und_nodes,y_und_nodes,z_und_nodes,x_und_cont,y_und_cont,z_und_cont,E_of_x,G_of_x,A_of_x,J_of_x,Gamma_of_x,Iyy_of_x,Izz_of_x,Ksy_of_x,Ksz_of_x,Gamx_of_x,Gamy_of_x,Gamz_of_x,E_of_xi,G_of_xi,A_of_xi,J_of_xi,Gamma_of_xi,Iyy_of_xi,Izz_of_xi,Ksy_of_xi,Ksz_of_xi,Gamx_of_xi,Gamy_of_xi,Gamz_of_xi,fx_of_xi,qy_of_xi,qz_of_xi,mx_of_xi,fa_of_xi,ql_of_xi,qt_of_xi,tq_of_xi,bm_of_xi,cfl_of_xi,cft_of_xi,cf_on_element,Px_of_xi,Py_of_xi,Pz_of_xi,Mx_of_xi,My_of_xi,Mz_of_xi,Pa_of_xi,Pl_of_xi,Pt_of_xi,Ml_of_xi,Mt_of_xi,Tq_of_xi,Bm_of_xi,CSx_of_xi,CSy_of_xi,CSz_of_xi,CSu_of_xi,CSv_of_xi,CSw_of_xi,CSt_of_xi,xi_apx,xi_apy,xi_apz,xi_amx,xi_amy,xi_amz,xi_apa,xi_apl,xi_apt,xi_atq,xi_aml,xi_amt,xi_abm,xi_akx,xi_aky,xi_akz,xi_aku,xi_akv,xi_akw,xi_akt};
+    varargout = {e_dof_range,e_node_range,L0,x1,beam,e_on_beam,R0,T0,Jac,x_vec_nodes,x_vec_interp,x0,y0,z0,x_und_nodes,y_und_nodes,z_und_nodes,x_und_cont,y_und_cont,z_und_cont,E_of_x,G_of_x,A_of_x,J_of_x,Gamma_of_x,Iyy_of_x,Izz_of_x,Ksy_of_x,Ksz_of_x,Gamx_of_x,Gamy_of_x,Gamz_of_x,E_of_xi,G_of_xi,A_of_xi,J_of_xi,Gamma_of_xi,Iyy_of_xi,Izz_of_xi,Ksy_of_xi,Ksz_of_xi,Gamx_of_xi,Gamy_of_xi,Gamz_of_xi,fx_of_xi,qy_of_xi,qz_of_xi,mx_of_xi,fa_of_xi,ql_of_xi,qt_of_xi,tq_of_xi,bm_of_xi,cfl_of_xi,cft_of_xi,cf_on_element,Px_of_xi,Py_of_xi,Pz_of_xi,Mx_of_xi,My_of_xi,Mz_of_xi,Pa_of_xi,Pl_of_xi,Pt_of_xi,Ml_of_xi,Mt_of_xi,Tq_of_xi,Bm_of_xi,CSx_of_xi,CSy_of_xi,CSz_of_xi,CSu_of_xi,CSv_of_xi,CSw_of_xi,CSt_of_xi,CSbl_of_xi,CSbt_of_xi,xi_apx,xi_apy,xi_apz,xi_amx,xi_amy,xi_amz,xi_apa,xi_apl,xi_apt,xi_atq,xi_aml,xi_amt,xi_abm,xi_akx,xi_aky,xi_akz,xi_aku,xi_akv,xi_akw,xi_akt,xi_akbl,xi_akbt};
 else % Unpack specific data for function
     switch lower(varargin{1})
         case 'global_matrices'
@@ -175,6 +179,8 @@ else % Unpack specific data for function
             CSv_of_xi = edata.CSv_of_xi{e};
             CSw_of_xi = edata.CSw_of_xi{e};
             CSt_of_xi = edata.CSt_of_xi{e};
+            CSbl_of_xi = edata.CSbl_of_xi{e};
+            CSbt_of_xi = edata.CSbt_of_xi{e};
             % Concentraded loads positions (xi)
             xi_apx = edata.xi_apx{e};
             xi_apy = edata.xi_apy{e};
@@ -197,8 +203,10 @@ else % Unpack specific data for function
             xi_akv = edata.xi_akv{e};
             xi_akw = edata.xi_akw{e};
             xi_akt = edata.xi_akt{e};
+            xi_akbl = edata.xi_akbl{e};
+            xi_akbt = edata.xi_akbt{e};
             % Outputs:
-            varargout = {L0,Gamx_of_xi,Gamy_of_xi,Gamz_of_xi,Px_of_xi,Py_of_xi,Pz_of_xi,Mx_of_xi,My_of_xi,Mz_of_xi,Pa_of_xi,Pl_of_xi,Pt_of_xi,Ml_of_xi,Mt_of_xi,Tq_of_xi,Bm_of_xi,CSx_of_xi,CSy_of_xi,CSz_of_xi,CSu_of_xi,CSv_of_xi,CSw_of_xi,CSt_of_xi,xi_apx,xi_apy,xi_apz,xi_amx,xi_amy,xi_amz,xi_apa,xi_apl,xi_apt,xi_atq,xi_aml,xi_amt,xi_abm,xi_akx,xi_aky,xi_akz,xi_aku,xi_akv,xi_akw,xi_akt};
+            varargout = {L0,Gamx_of_xi,Gamy_of_xi,Gamz_of_xi,Px_of_xi,Py_of_xi,Pz_of_xi,Mx_of_xi,My_of_xi,Mz_of_xi,Pa_of_xi,Pl_of_xi,Pt_of_xi,Ml_of_xi,Mt_of_xi,Tq_of_xi,Bm_of_xi,CSx_of_xi,CSy_of_xi,CSz_of_xi,CSu_of_xi,CSv_of_xi,CSw_of_xi,CSt_of_xi,CSbl_of_xi,CSbt_of_xi,xi_apx,xi_apy,xi_apz,xi_amx,xi_amy,xi_amz,xi_apa,xi_apl,xi_apt,xi_atq,xi_aml,xi_amt,xi_abm,xi_akx,xi_aky,xi_akz,xi_aku,xi_akv,xi_akw,xi_akt,xi_akbl,xi_akbt};
         case 'outputs'
             % Geometry-related
             e_dof_range = edata.e_dof_range{e};

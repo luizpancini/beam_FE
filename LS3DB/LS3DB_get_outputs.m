@@ -1,7 +1,7 @@
 function SOLdata = LS3DB_get_outputs(edata,FEMdata,SOLdata)
 
 % Unpack FEM data
-[beam_theory,warp_DOF,constitutive_model,scale,Ne,enn,n_div,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta] = unpack_FEMdata(FEMdata,'outputs');
+[beam_theory,warp_DOF,constitutive_model,scale,Ne,enn,n_div,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,DOF_dphix,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta] = unpack_FEMdata(FEMdata,'outputs');
 
 % Initialize outputs: generalized displacements and internal forces, and deformed structure position
 u_local_interp = cell(Ne,1); v_local_interp = cell(Ne,1); w_local_interp = cell(Ne,1); phix_local_interp = cell(Ne,1); phiy_local_interp = cell(Ne,1); phiz_local_interp = cell(Ne,1); dphix_local_interp = cell(Ne,1); Nx_interp = cell(Ne,1); My_interp = cell(Ne,1); Mz_interp = cell(Ne,1); Vy_interp = cell(Ne,1); Vz_interp = cell(Ne,1); Tq_interp = cell(Ne,1); Bm_interp = cell(Ne,1);
@@ -35,7 +35,7 @@ for e=1:Ne
         v_interp_fun = @(x) v_interp_fun(x) + u_local(DOF_v(n))*psi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*psi{2*n}(xi(x),L0,Gamy(x));
         w_interp_fun = @(x) w_interp_fun(x) + u_local(DOF_w(n))*psi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*psi{2*n}(xi(x),L0,Gamz(x));
         if warp_DOF
-            phix_interp_fun = @(x) phix_interp_fun(x) + u_local(DOF_phix(2*n-1))*psi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*psi{2*n}(xi(x),L0,Gamx(x));
+            phix_interp_fun = @(x) phix_interp_fun(x) + u_local(DOF_phix(n))*psi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*psi{2*n}(xi(x),L0,Gamx(x));
         else
             phix_interp_fun = @(x) phix_interp_fun(x) + u_local(DOF_phix(n))*zeta{n}(xi(x));
         end
@@ -52,9 +52,9 @@ for e=1:Ne
         dphiy_interp_fun = @(x) dphiy_interp_fun(x) - Jac^-1*(u_local(DOF_w(n))*dphi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*dphi{2*n}(xi(x),L0,Gamz(x)));
         dphiz_interp_fun = @(x) dphiz_interp_fun(x) - Jac^-1*(u_local(DOF_v(n))*dphi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*dphi{2*n}(xi(x),L0,Gamy(x)));
         if warp_DOF
-            dphix_interp_fun = @(x) dphix_interp_fun(x) - (u_local(DOF_phix(2*n-1))*phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*phi{2*n}(xi(x),L0,Gamx(x)));
-            d2phix_interp_fun = @(x) d2phix_interp_fun(x) - Jac^-1*(u_local(DOF_phix(2*n-1))*dphi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*dphi{2*n}(xi(x),L0,Gamx(x)));
-            d3phix_interp_fun = @(x) d3phix_interp_fun(x) - Jac^-2*(u_local(DOF_phix(2*n-1))*d2phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_phix(2*n))*d2phi{2*n}(xi(x),L0,Gamx(x)));
+            dphix_interp_fun = @(x) dphix_interp_fun(x) - (u_local(DOF_phix(n))*phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*phi{2*n}(xi(x),L0,Gamx(x)));
+            d2phix_interp_fun = @(x) d2phix_interp_fun(x) - Jac^-1*(u_local(DOF_phix(n))*dphi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*dphi{2*n}(xi(x),L0,Gamx(x)));
+            d3phix_interp_fun = @(x) d3phix_interp_fun(x) - Jac^-2*(u_local(DOF_phix(n))*d2phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*d2phi{2*n}(xi(x),L0,Gamx(x)));
         else
             dphix_interp_fun = @(x) dphix_interp_fun(x) + Jac^-1*(u_local(DOF_phix(n))*dzeta{n}(xi(x)));
         end

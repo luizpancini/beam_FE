@@ -1,4 +1,4 @@
-function [FEMdata,edata] = LS3DB_nodelem_vars(FEMdata,edata,E,G,A,J,Gamma,Iyy,Izz,Ksy,Ksz,fx_of_x,mx_of_x,qy_of_x,qz_of_x,fa_of_x,ql_of_x,qt_of_x,tq_of_x,bm_of_x,Px_of_x,Py_of_x,Pz_of_x,Pa_of_x,Pl_of_x,Pt_of_x,Mx_of_x,My_of_x,Mz_of_x,Ml_of_x,Mt_of_x,Tq_of_x,Bm_of_x,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,cfl_of_x,cft_of_x)
+function [FEMdata,edata] = LS3DB_nodelem_vars(FEMdata,edata,E,G,A,J,Gamma,Iyy,Izz,Ksy,Ksz,fx_of_x,mx_of_x,qy_of_x,qz_of_x,fa_of_x,ql_of_x,qt_of_x,tq_of_x,bm_of_x,Px_of_x,Py_of_x,Pz_of_x,Pa_of_x,Pl_of_x,Pt_of_x,Mx_of_x,My_of_x,Mz_of_x,Ml_of_x,Mt_of_x,Tq_of_x,Bm_of_x,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,cfl_of_x,cft_of_x)
 
 %% Degrees of freedom data
 % Element number of nodes
@@ -22,18 +22,16 @@ NGP = 2*enn;
 
 % Element's DOFs
 EDOFs = cell(enn,1); % Each cell entry contains corresponding local DOFs of element's nodes
-DOF_u = zeros(1,enn); DOF_v = DOF_u; DOF_w = DOF_u; DOF_phiy = DOF_u; DOF_phiz = DOF_u; DOF_bendl = zeros(1,2*enn); DOF_bendt = DOF_bendl;
-if FEMdata.warp_DOF, DOF_phix = DOF_bendl; else, DOF_phix = DOF_u; end
+DOF_u = zeros(1,enn); DOF_v = DOF_u; DOF_w = DOF_u; DOF_phix = DOF_u; DOF_phiy = DOF_u; DOF_phiz = DOF_u; DOF_dphix = DOF_u; 
 for node=1:enn
     EDOFs{node} = ndof*node-(ndof-1):ndof*node;
     DOF_u(node) = EDOFs{node}(1);
     DOF_v(node) = EDOFs{node}(2);
     DOF_w(node) = EDOFs{node}(3);
-    if FEMdata.warp_DOF, DOF_phix(2*node-1:2*node) = EDOFs{node}([4 7]); else, DOF_phix(node) = EDOFs{node}(4); end
+    DOF_phix(node) = EDOFs{node}(4); 
     DOF_phiy(node) = EDOFs{node}(5);
     DOF_phiz(node) = EDOFs{node}(6);
-    DOF_bendl(2*node-1:2*node) = EDOFs{node}([2 6]);
-    DOF_bendt(2*node-1:2*node) = EDOFs{node}([3 5]);
+    if FEMdata.warp_DOF, DOF_dphix(node) = EDOFs{node}(7); else, DOF_dphix(node) = NaN; end
 end
 
 %% Unpack concentraded loads/sources positions 
@@ -59,6 +57,8 @@ aku = FEMdata.sources.aku;
 akv = FEMdata.sources.akv;
 akw = FEMdata.sources.akw;
 akt = FEMdata.sources.akt;
+akbl = FEMdata.sources.akbl;
+akbt = FEMdata.sources.akbt;
 
 %% Element and nodal variables
 % Elements' nodes
@@ -90,8 +90,8 @@ L0 = cell(Ne,1); x1 = cell(Ne,1); beam = cell(Ne,1); e_on_beam = cell(Ne,1); e_n
 E_of_x = cell(Ne,1); G_of_x = cell(Ne,1); A_of_x = cell(Ne,1); J_of_x = cell(Ne,1); Iyy_of_x = cell(Ne,1); Izz_of_x = cell(Ne,1); Gamma_of_x = cell(Ne,1); Ksy_of_x = cell(Ne,1); Ksz_of_x = cell(Ne,1); Gamx_of_x = cell(Ne,1); Gamy_of_x = cell(Ne,1); Gamz_of_x = cell(Ne,1);
 E_of_xi = cell(Ne,1); G_of_xi = cell(Ne,1); A_of_xi = cell(Ne,1); J_of_xi = cell(Ne,1); Iyy_of_xi = cell(Ne,1); Izz_of_xi = cell(Ne,1); Gamma_of_xi = cell(Ne,1); Ksy_of_xi = cell(Ne,1); Ksz_of_xi = cell(Ne,1); Gamx_of_xi = cell(Ne,1); Gamy_of_xi = cell(Ne,1); Gamz_of_xi = cell(Ne,1);
 fx_of_xi = cell(Ne,1); qy_of_xi = cell(Ne,1); qz_of_xi = cell(Ne,1); mx_of_xi = cell(Ne,1); Px_of_xi = cell(Ne,1); Py_of_xi = cell(Ne,1); Pz_of_xi = cell(Ne,1); My_of_xi = cell(Ne,1); Mz_of_xi = cell(Ne,1); Mx_of_xi = cell(Ne,1); CSx_of_xi = cell(Ne,1); CSy_of_xi = cell(Ne,1); CSz_of_xi = cell(Ne,1);
-fa_of_xi = cell(Ne,1); ql_of_xi = cell(Ne,1); qt_of_xi = cell(Ne,1); tq_of_xi = cell(Ne,1); bm_of_xi = cell(Ne,1); Pa_of_xi = cell(Ne,1); Pl_of_xi = cell(Ne,1); Pt_of_xi = cell(Ne,1); Ml_of_xi = cell(Ne,1); Mt_of_xi = cell(Ne,1); Tq_of_xi = cell(Ne,1); Bm_of_xi = cell(Ne,1); CSu_of_xi = cell(Ne,1); CSv_of_xi = cell(Ne,1); CSw_of_xi = cell(Ne,1); CSt_of_xi = cell(Ne,1); cfl_of_xi = cell(Ne,1); cft_of_xi = cell(Ne,1); cf_on_element = cell(Ne,1);
-xi_apx = cell(Ne,1); xi_apy = cell(Ne,1); xi_apz = cell(Ne,1); xi_amx = cell(Ne,1); xi_amy = cell(Ne,1); xi_amz = cell(Ne,1); xi_apa = cell(Ne,1); xi_apl = cell(Ne,1); xi_apt = cell(Ne,1); xi_atq = cell(Ne,1); xi_aml = cell(Ne,1); xi_amt = cell(Ne,1); xi_abm = cell(Ne,1); xi_akx = cell(Ne,1); xi_aky = cell(Ne,1); xi_akz = cell(Ne,1); xi_aku = cell(Ne,1); xi_akv = cell(Ne,1); xi_akw = cell(Ne,1); xi_akt = cell(Ne,1); 
+fa_of_xi = cell(Ne,1); ql_of_xi = cell(Ne,1); qt_of_xi = cell(Ne,1); tq_of_xi = cell(Ne,1); bm_of_xi = cell(Ne,1); Pa_of_xi = cell(Ne,1); Pl_of_xi = cell(Ne,1); Pt_of_xi = cell(Ne,1); Ml_of_xi = cell(Ne,1); Mt_of_xi = cell(Ne,1); Tq_of_xi = cell(Ne,1); Bm_of_xi = cell(Ne,1); CSu_of_xi = cell(Ne,1); CSv_of_xi = cell(Ne,1); CSw_of_xi = cell(Ne,1); CSt_of_xi = cell(Ne,1); CSbl_of_xi = cell(Ne,1); CSbt_of_xi = cell(Ne,1); cfl_of_xi = cell(Ne,1); cft_of_xi = cell(Ne,1); cf_on_element = cell(Ne,1);
+xi_apx = cell(Ne,1); xi_apy = cell(Ne,1); xi_apz = cell(Ne,1); xi_amx = cell(Ne,1); xi_amy = cell(Ne,1); xi_amz = cell(Ne,1); xi_apa = cell(Ne,1); xi_apl = cell(Ne,1); xi_apt = cell(Ne,1); xi_atq = cell(Ne,1); xi_aml = cell(Ne,1); xi_amt = cell(Ne,1); xi_abm = cell(Ne,1); xi_akx = cell(Ne,1); xi_aky = cell(Ne,1); xi_akz = cell(Ne,1); xi_aku = cell(Ne,1); xi_akv = cell(Ne,1); xi_akw = cell(Ne,1); xi_akt = cell(Ne,1); xi_akbl = cell(Ne,1);  xi_akbt = cell(Ne,1);xi_ama = cell(Ne,1); 
 indexat = @(expr, index) expr(index); % To get specific element index
 % Loop over elements
 for e=1:Ne
@@ -109,7 +109,7 @@ for e=1:Ne
     % Element node range, undeformed length, starting position and Jacobian
     e_node_range{e} = elem_nodes(e,:);       
     L0{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e}); 
-    x1{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e})*(e_on_beam{e}-1); x1{e} = round(x1{e},14);
+    x1{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e})*(e_on_beam{e}-1); 
     Jac{e} = L0{e}/2;
     % Element global DOFs range
     e_dof_range{e} = zeros(edof,1);
@@ -215,6 +215,8 @@ for e=1:Ne
     CSv_of_xi{e} = @(xi) CSv_of_x{beam{e}}(x(xi));
     CSw_of_xi{e} = @(xi) CSw_of_x{beam{e}}(x(xi));
     CSt_of_xi{e} = @(xi) CSt_of_x{beam{e}}(x(xi));
+    CSbl_of_xi{e} = @(xi) CSbl_of_x{beam{e}}(x(xi));
+    CSbt_of_xi{e} = @(xi) CSbt_of_x{beam{e}}(x(xi));
     % Element concentraded load positions as functions of the parent coordinate xi and the respective valid indices
     [xi_apx{e},apx] = get_loads_sources_positions(apx,Jac{e},beam{e},x1{e});
     [xi_apy{e},apy] = get_loads_sources_positions(apy,Jac{e},beam{e},x1{e});
@@ -237,6 +239,8 @@ for e=1:Ne
     [xi_akv{e},akv] = get_loads_sources_positions(akv,Jac{e},beam{e},x1{e});
     [xi_akw{e},akw] = get_loads_sources_positions(akw,Jac{e},beam{e},x1{e});
     [xi_akt{e},akt] = get_loads_sources_positions(akt,Jac{e},beam{e},x1{e});
+    [xi_akbl{e},akbl] = get_loads_sources_positions(akbl,Jac{e},beam{e},x1{e});
+    [xi_akbt{e},akbt] = get_loads_sources_positions(akbt,Jac{e},beam{e},x1{e});
 end
 % Truncate small components of nodal coordinates
 tol = 1e-6; nodes_coords(abs(nodes_coords)<tol) = 0;
@@ -253,8 +257,7 @@ FEMdata.DOF_w = DOF_w;
 FEMdata.DOF_phix = DOF_phix;
 FEMdata.DOF_phiy = DOF_phiy;
 FEMdata.DOF_phiz = DOF_phiz;
-FEMdata.DOF_bendl = DOF_bendl;
-FEMdata.DOF_bendt = DOF_bendt;
+FEMdata.DOF_dphix = DOF_dphix;
 FEMdata.NGP = NGP;
 FEMdata.N_nodes = N_nodes;
 FEMdata.Ne = Ne;
@@ -337,6 +340,8 @@ edata.CSu_of_xi = CSu_of_xi;
 edata.CSv_of_xi = CSv_of_xi;
 edata.CSw_of_xi = CSw_of_xi;
 edata.CSt_of_xi = CSt_of_xi;
+edata.CSbl_of_xi = CSbl_of_xi;
+edata.CSbt_of_xi = CSbt_of_xi;
 edata.cfl_of_xi = cfl_of_xi;
 edata.cft_of_xi = cft_of_xi;
 edata.cf_on_element = cf_on_element;
@@ -360,11 +365,12 @@ edata.xi_aku = xi_aku;
 edata.xi_akv = xi_akv;
 edata.xi_akw = xi_akw;
 edata.xi_akt = xi_akt;
+edata.xi_akbl = xi_akbl;
+edata.xi_akbt = xi_akbt;
 
 %% Nested functions
-
     function [xi_a_valid,a] = get_loads_sources_positions(a,Jac,beam,x1)
-        xi_a = Jac^-1*(a{beam}-x1)-1;           % Positions of load/source in the xi domain     
+        xi_a = round(Jac^-1*(a{beam}-x1)-1,4);  % Positions of source in the xi domain    
         valid_ind = (xi_a >= -1 & xi_a <= 1);   % Valid indices (-1 <= xi <= 1) 
         xi_a_valid = xi_a(valid_ind);           % Maintain only the positions with valid indices
         a{beam}(valid_ind) = [];                % Cancel the valid positions so they are not applied to adjecent element as well
