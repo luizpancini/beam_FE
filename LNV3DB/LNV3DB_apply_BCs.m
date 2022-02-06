@@ -1,7 +1,7 @@
 function FEMdata = LNV3DB_apply_BCs(FEMdata)
 
 % Unpack FEM data
-[BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix] = unpack_FEMdata(FEMdata,'bcs');
+[BC_nodes,N_nodes,ndof,elem_nodes,EDOFs] = unpack_FEMdata(FEMdata,'bcs');
 
 %% Apply BCs
 remove_list = [];  
@@ -24,7 +24,7 @@ for i=1:length(BC_nodes)
         DOFs_to_BC = EDOFs{1};
         BCed_dofs = node_DOFs(DOFs_to_BC);                                         
     elseif BC_type == "SS"                                                  % Simple support: restrict all displacements and rotation
-        DOFs_to_BC = [DOF_u(1) DOF_v(1) DOF_w(1) DOF_phix(1)];
+        DOFs_to_BC = EDOFs{[1:4]};
         BCed_dofs = node_DOFs(DOFs_to_BC); 
     elseif BC_type == "R"                                                   % Restrict DOF # to specified values
         DOFs_to_BC = str2double(regexpi(BC_nodes{i}(2),'[0-9]','match'))';

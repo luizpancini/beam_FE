@@ -33,8 +33,7 @@ if isempty(varargin) % Unpack all data
     DOF_phix = FEMdata.DOF_phix;
     DOF_phiy = FEMdata.DOF_phiy;
     DOF_phiz = FEMdata.DOF_phiz;
-    DOF_phiy = FEMdata.DOF_bendl;
-    DOF_bendt = FEMdata.DOF_bendt;
+    DOF_dphix = FEMdata.DOF_dphix;
     NGP = FEMdata.NGP;
     dirac_delta = FEMdata.dirac_delta;  
     % Concentraded sources - numerical values
@@ -101,7 +100,7 @@ if isempty(varargin) % Unpack all data
     D_Mt = FEMdata.funs.D_Mt;
     D_Mr = FEMdata.funs.D_Mr;
     % Outputs:
-    varargout = {unit_sys,beam_theory,N_modes,RI,N_beams,L,b_alpha,b_beta,b_gamma,constitutive_model,Ne_b,element_order,elem_connect,BC_nodes,Ne,N_nodes,Ndof,edof,enn,ndof,elem_nodes,nodes_coords,n_div,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,DOF_phiy,DOF_bendt,NGP,dirac_delta,CSx,CSy,CSz,CSu,CSv,CSw,CSt,CSbl,CSbt,Ma,MaRix,MaRiy,MaRiz,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,Ma_of_x,MaRix_of_x,MaRiy_of_x,MaRiz_of_x,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,ama,cfl_of_x,cft_of_x,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta,B,B_cf,B_Mt,B_Mr,H_psi,H_phi,H_zeta,D,D_cf,D_Mt,D_Mr};
+    varargout = {unit_sys,beam_theory,N_modes,RI,N_beams,L,b_alpha,b_beta,b_gamma,constitutive_model,Ne_b,element_order,elem_connect,BC_nodes,Ne,N_nodes,Ndof,edof,enn,ndof,elem_nodes,nodes_coords,n_div,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,DOF_dphix,NGP,dirac_delta,CSx,CSy,CSz,CSu,CSv,CSw,CSt,CSbl,CSbt,Ma,MaRix,MaRiy,MaRiz,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,Ma_of_x,MaRix_of_x,MaRiy_of_x,MaRiz_of_x,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,ama,cfl_of_x,cft_of_x,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta,B,B_cf,B_Mt,B_Mr,H_psi,H_phi,H_zeta,D,D_cf,D_Mt,D_Mr};
 else % Unpack specific data for function
     switch lower(varargin{1})
           case 'global_matrices'
@@ -148,12 +147,8 @@ else % Unpack specific data for function
               ndof = FEMdata.ndof;
               elem_nodes = FEMdata.elem_nodes;
               EDOFs = FEMdata.EDOFs;
-              DOF_u = FEMdata.DOF_u;
-              DOF_v = FEMdata.DOF_v;
-              DOF_w = FEMdata.DOF_w;
-              DOF_phix = FEMdata.DOF_phix;
               % Outputs:
-              varargout = {BC_nodes,N_nodes,ndof,elem_nodes,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix};
+              varargout = {BC_nodes,N_nodes,ndof,elem_nodes,EDOFs};
          case 'process_modes'
               % General data
               unit_sys = FEMdata.unit_sys;
