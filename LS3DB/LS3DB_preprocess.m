@@ -146,11 +146,11 @@ end
 % Check GJ/EGam ratio
 if warp_DOF 
     if element_order == "linear", max_ratio = 1; tip = 1; elseif element_order == "quadratic", max_ratio = 1e1; tip = 0; end
-    for b=1:N_beams
-        if round(G(L(b)/2)*J(L(b)/2)/(E(L(b)/2)*Gamma(L(b)/2))/Ne_b(b),1) > max_ratio % If the ratio GJ/EGam is very high
-            if tip, tip = ", or increasing the element order"; else, tip = ""; end
-            warning("Ratio GJ/E*Gam very high for beam " + num2str(b) + " - results for internal torque may be innaccurate. Consider increasing the number of elements, setting warp_DOF to zero" + tip);
-        end
+    ratios = G(0).*J(0)./(E(0).*Gamma(0))./Ne_b;
+    high_ratios_ind = round(ratios,1) > max_ratio;
+    if any(high_ratios_ind) % If the ratio GJ/EGam is very high
+        if tip, tip = ", or increasing the element order"; else, tip = ""; end
+        warning("Ratio GJ/E*Gam very high for beam(s) " + num2str(high_ratios_ind) + " - results for internal torque may be innaccurate. Consider increasing the number of elements, setting warp_DOF to zero" + tip);
     end
 end    
 
