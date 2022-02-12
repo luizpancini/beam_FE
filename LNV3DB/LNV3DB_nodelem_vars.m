@@ -1,10 +1,13 @@
 function [FEMdata,edata] = LNV3DB_nodelem_vars(FEMdata,edata,E,G,rho,A,J,Gamma,Is,Iyy,Izz,Ksy,Ksz,e1,e2,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,Ma_of_x,MaRix_of_x,MaRiy_of_x,MaRiz_of_x,cfl_of_x,cft_of_x)
 
+% Unpack FEM data
+[L,b_alpha,b_beta,b_gamma,Ne_b,element_order,elem_connect,elem_nodes,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,ama] = unpack_FEMdata(FEMdata,'nodelem_vars');
+
 %% Degrees of freedom data
 % Element number of nodes
-if FEMdata.element_order == "linear"
+if element_order == "linear"
     enn = 2;         
-elseif FEMdata.element_order == "quadratic"
+elseif element_order == "quadratic"
     enn = 3;         
 else
     error('Specify element_order as linear or quadratic');
@@ -30,24 +33,11 @@ for node=1:enn
     DOF_dphix(node) = EDOFs{node}(7);
 end
 
-%% Unpack concentraded loads/sources positions 
-% Concentraded sources positions
-akx = FEMdata.sources.akx;
-aky = FEMdata.sources.aky;
-akz = FEMdata.sources.akz;
-aku = FEMdata.sources.aku;
-akv = FEMdata.sources.akv;
-akw = FEMdata.sources.akw;
-akt = FEMdata.sources.akt;
-akbl = FEMdata.sources.akbl;
-akbt = FEMdata.sources.akbt;
-ama = FEMdata.sources.ama;
-
 %% Element and nodal variables
 % Elements' nodes
-if FEMdata.elem_connect == "sequenced"              
-    elem_nodes = zeros(sum(FEMdata.Ne_b),enn); % #rows = #elements, #columns = #nodes/element
-    for i=1:sum(FEMdata.Ne_b)
+if elem_connect == "sequenced"              
+    elem_nodes = zeros(sum(Ne_b),enn); % #rows = #elements, #columns = #nodes/element
+    for i=1:sum(Ne_b)
         if enn == 2
             elem_nodes(i,:) = [i, i+1];
         elseif enn == 3
@@ -56,15 +46,13 @@ if FEMdata.elem_connect == "sequenced"
         end
     end
 else % Unsequenced, so check for errors
-    if size(FEMdata.elem_nodes,2) ~= enn
+    if size(elem_nodes,2) ~= enn
         error("Specify exactly " + num2str(enn) + " nodes per " + element_order + " element in the matrix elem_nodes");
-    else
-        elem_nodes = FEMdata.elem_nodes;
     end
 end
 % Total number of elements, nodes and DOFs
 N_nodes = max(max(elem_nodes));     % Total number of nodes
-Ne = sum(FEMdata.Ne_b);             % Total number of elements
+Ne = sum(Ne_b);                     % Total number of elements
 Ndof = ndof*N_nodes;                % Total number of degrees-of-freedom   
 % Initialize element properties and data
 n_div = 21;                         % Default number of divisions for interpolation in each element
@@ -80,19 +68,19 @@ indexat = @(expr, index) expr(index); % To get specific element index
 for e=1:Ne
     % beam: beam to which element e belongs
     beam{e} = 1; 
-    while sum(FEMdata.Ne_b(1:beam{e})) < e
+    while sum(Ne_b(1:beam{e})) < e
         beam{e} = beam{e}+1;
     end
     % e_on_beam: which element of that beam e is
     if beam{e} == 1
         e_on_beam{e} = e;
     else
-        e_on_beam{e} = e-sum(FEMdata.Ne_b(1:beam{e}-1));
+        e_on_beam{e} = e-sum(Ne_b(1:beam{e}-1));
     end
     % Element node range, undeformed length, starting position and Jacobian
     e_node_range{e} = elem_nodes(e,:);       
-    L0{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e}); 
-    x1{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e})*(e_on_beam{e}-1); 
+    L0{e} = L(beam{e})/Ne_b(beam{e}); 
+    x1{e} = L(beam{e})/Ne_b(beam{e})*(e_on_beam{e}-1); 
     Jac{e} = L0{e}/2;
     % Element global DOFs range
     e_dof_range{e} = zeros(edof,1);
@@ -100,7 +88,7 @@ for e=1:Ne
         e_dof_range{e}(ndof*n-(ndof-1):ndof*n) = ndof*e_node_range{e}(n)-(ndof-1):ndof*e_node_range{e}(n);
     end 
     % Element rotation and compound rotation tensors 
-    sa = sin(FEMdata.b_alpha(beam{e})); ca = cos(FEMdata.b_alpha(beam{e})); cb = cos(FEMdata.b_beta(beam{e})); sb = sin(FEMdata.b_beta(beam{e})); cg = cos(FEMdata.b_gamma(beam{e})); sg = sin(FEMdata.b_gamma(beam{e}));
+    sa = sin(b_alpha(beam{e})); ca = cos(b_alpha(beam{e})); cb = cos(b_beta(beam{e})); sb = sin(b_beta(beam{e})); cg = cos(b_gamma(beam{e})); sg = sin(b_gamma(beam{e}));
     R0{e} = [cb*ca, ca*sg*sb - cg*sa, sg*sa + cg*ca*sb
              cb*sa, cg*ca + sg*sb*sa, cg*sb*sa - ca*sg
                -sb,            cb*sg,            cg*cb]; % Bryant angles rotation matrix

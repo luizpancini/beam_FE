@@ -103,6 +103,28 @@ if isempty(varargin) % Unpack all data
     varargout = {unit_sys,beam_theory,N_modes,RI,N_beams,L,b_alpha,b_beta,b_gamma,constitutive_model,Ne_b,element_order,elem_connect,BC_nodes,Ne,N_nodes,Ndof,edof,enn,ndof,elem_nodes,nodes_coords,n_div,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,DOF_dphix,NGP,dirac_delta,CSx,CSy,CSz,CSu,CSv,CSw,CSt,CSbl,CSbt,Ma,MaRix,MaRiy,MaRiz,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,Ma_of_x,MaRix_of_x,MaRiy_of_x,MaRiz_of_x,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,ama,cfl_of_x,cft_of_x,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta,B,B_cf,B_Mt,B_Mr,H_psi,H_phi,H_zeta,D,D_cf,D_Mt,D_Mr};
 else % Unpack specific data for function
     switch lower(varargin{1})
+          case 'nodelem_vars'
+              % General data
+              L = FEMdata.L;
+              b_alpha = FEMdata.b_alpha;
+              b_beta = FEMdata.b_beta;
+              b_gamma = FEMdata.b_gamma;
+              Ne_b = FEMdata.Ne_b;
+              element_order = FEMdata.element_order;
+              elem_connect = FEMdata.elem_connect;
+              elem_nodes = FEMdata.elem_nodes;
+              % Concentraded sources positions
+              akx = FEMdata.sources.akx;
+              aky = FEMdata.sources.aky;
+              akz = FEMdata.sources.akz;
+              aku = FEMdata.sources.aku;
+              akv = FEMdata.sources.akv;
+              akw = FEMdata.sources.akw;
+              akt = FEMdata.sources.akt;
+              akbl = FEMdata.sources.akbl;
+              akbt = FEMdata.sources.akbt;
+              ama = FEMdata.sources.ama;
+              varargout = {L,b_alpha,b_beta,b_gamma,Ne_b,element_order,elem_connect,elem_nodes,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,ama};
           case 'global_matrices'
               % General data
               Ne = FEMdata.Ne;

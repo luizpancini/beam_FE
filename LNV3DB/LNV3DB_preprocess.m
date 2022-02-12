@@ -20,7 +20,6 @@ FEMdata.elem_connect = elem_connect;
 FEMdata.BC_nodes = BC_nodes; 
 FEMdata.RI = RI;
 FEMdata.N_modes = N_modes;           
-if exist('elem_nodes','var'), FEMdata.elem_nodes = elem_nodes; end
 
 %% If loads/sources not input, set default (empty/zero) values
 def_cell = cell(N_beams,1); def_cell(:) = {[]};
@@ -76,7 +75,7 @@ if FEMdata.elem_connect == "unsequenced"
     if ~exist('elem_nodes','var')
         error('Specify the elem_nodes matrix, with each row containing the nodes of that corresponding element');
     else
-        edata.elem_nodes = elem_nodes;
+        FEMdata.elem_nodes = elem_nodes;
     end
 elseif FEMdata.elem_connect ~= "sequenced" && FEMdata.elem_connect ~= "unsequenced"
     error('Specify elem_connect as sequenced or unsequenced');
