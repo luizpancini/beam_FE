@@ -55,3 +55,4 @@ scale = 1;
 
 %% Call solver - Solve and plot results
 LS3DB_main;
+clearvars -except edata FEMdata SOLdata time_total time_pre time_solve time_post 
