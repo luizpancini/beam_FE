@@ -1,16 +1,19 @@
 function [FEMdata,edata] = LS3DB_nodelem_vars(FEMdata,edata,E,G,A,J,Gamma,Iyy,Izz,Ksy,Ksz,fx_of_x,mx_of_x,qy_of_x,qz_of_x,fa_of_x,ql_of_x,qt_of_x,tq_of_x,bm_of_x,Px_of_x,Py_of_x,Pz_of_x,Pa_of_x,Pl_of_x,Pt_of_x,Mx_of_x,My_of_x,Mz_of_x,Ml_of_x,Mt_of_x,Tq_of_x,Bm_of_x,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,cfl_of_x,cft_of_x)
 
+% Unpack FEM data
+[warp_DOF,L,b_alpha,b_beta,b_gamma,Ne_b,element_order,elem_connect,elem_nodes,apx,apy,apz,amx,amy,amz,apa,apl,apt,atq,aml,amt,abm,akx,aky,akz,aku,akv,akw,akt,akbl,akbt] = unpack_FEMdata(FEMdata,'nodelem_vars');
+
 %% Degrees of freedom data
 % Element number of nodes
-if FEMdata.element_order == "linear"
+if element_order == "linear"
     enn = 2;         
-elseif FEMdata.element_order == "quadratic"
+elseif element_order == "quadratic"
     enn = 3;         
 else
     error('Specify element_order as linear or quadratic');
 end
 % Node's number of degrees of freedom
-if FEMdata.warp_DOF  % Allowance for the warping DOF
+if warp_DOF  % Allowance for the warping DOF
     ndof = 7;        
 else
     ndof = 6;
@@ -31,40 +34,14 @@ for node=1:enn
     DOF_phix(node) = EDOFs{node}(4); 
     DOF_phiy(node) = EDOFs{node}(5);
     DOF_phiz(node) = EDOFs{node}(6);
-    if FEMdata.warp_DOF, DOF_dphix(node) = EDOFs{node}(7); else, DOF_dphix(node) = NaN; end
+    if warp_DOF, DOF_dphix(node) = EDOFs{node}(7); else, DOF_dphix(node) = NaN; end
 end
-
-%% Unpack concentraded loads/sources positions 
-% Concentrated loads positions
-apx = FEMdata.loads.apx;
-apy = FEMdata.loads.apy;
-apz = FEMdata.loads.apz;
-amx = FEMdata.loads.amx;
-amy = FEMdata.loads.amy;
-amz = FEMdata.loads.amz;
-apa = FEMdata.loads.apa;
-apl = FEMdata.loads.apl;
-apt = FEMdata.loads.apt;
-atq = FEMdata.loads.atq;
-aml = FEMdata.loads.aml;
-amt = FEMdata.loads.amt;
-abm = FEMdata.loads.abm;
-% Concentraded sources positions
-akx = FEMdata.sources.akx;
-aky = FEMdata.sources.aky;
-akz = FEMdata.sources.akz;
-aku = FEMdata.sources.aku;
-akv = FEMdata.sources.akv;
-akw = FEMdata.sources.akw;
-akt = FEMdata.sources.akt;
-akbl = FEMdata.sources.akbl;
-akbt = FEMdata.sources.akbt;
 
 %% Element and nodal variables
 % Elements' nodes
-if FEMdata.elem_connect == "sequenced"              
-    elem_nodes = zeros(sum(FEMdata.Ne_b),enn); % #rows = #elements, #columns = #nodes/element
-    for i=1:sum(FEMdata.Ne_b)
+if elem_connect == "sequenced"              
+    elem_nodes = zeros(sum(Ne_b),enn); % #rows = #elements, #columns = #nodes/element
+    for i=1:sum(Ne_b)
         if enn == 2
             elem_nodes(i,:) = [i, i+1];
         elseif enn == 3
@@ -73,15 +50,13 @@ if FEMdata.elem_connect == "sequenced"
         end
     end
 else % Unsequenced, so check for errors
-    if size(FEMdata.elem_nodes,2) ~= enn
-        error("Specify exactly " + num2str(enn) + " nodes per " + element_order + " element in the matrix elem_nodes");
-    else
-        elem_nodes = FEMdata.elem_nodes;    
+    if size(elem_nodes,2) ~= enn
+        error("Specify exactly " + num2str(enn) + " nodes per " + element_order + " element in the matrix elem_nodes");   
     end
 end
 % Total number of elements, nodes and DOFs
 N_nodes = max(max(elem_nodes));     % Total number of nodes
-Ne = sum(FEMdata.Ne_b);             % Total number of elements
+Ne = sum(Ne_b);                     % Total number of elements
 Ndof = ndof*N_nodes;                % Total number of degrees-of-freedom   
 % Initialize element properties and data
 n_div = 11;                         % Default number of divisions for interpolation in each element
@@ -97,19 +72,19 @@ indexat = @(expr, index) expr(index); % To get specific element index
 for e=1:Ne
     % beam: beam to which element e belongs
     beam{e} = 1; 
-    while sum(FEMdata.Ne_b(1:beam{e})) < e
+    while sum(Ne_b(1:beam{e})) < e
         beam{e} = beam{e}+1;
     end
     % e_on_beam: which element of that beam e is
     if beam{e} == 1
         e_on_beam{e} = e;
     else
-        e_on_beam{e} = e-sum(FEMdata.Ne_b(1:beam{e}-1));
+        e_on_beam{e} = e-sum(Ne_b(1:beam{e}-1));
     end
     % Element node range, undeformed length, starting position and Jacobian
     e_node_range{e} = elem_nodes(e,:);       
-    L0{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e}); 
-    x1{e} = FEMdata.L(beam{e})/FEMdata.Ne_b(beam{e})*(e_on_beam{e}-1); 
+    L0{e} = L(beam{e})/Ne_b(beam{e}); 
+    x1{e} = L(beam{e})/Ne_b(beam{e})*(e_on_beam{e}-1); 
     Jac{e} = L0{e}/2;
     % Element global DOFs range
     e_dof_range{e} = zeros(edof,1);
@@ -117,13 +92,13 @@ for e=1:Ne
         e_dof_range{e}(ndof*n-(ndof-1):ndof*n) = ndof*e_node_range{e}(n)-(ndof-1):ndof*e_node_range{e}(n);
     end 
     % Element rotation and compound rotation tensors 
-    sa = sin(FEMdata.b_alpha(beam{e})); ca = cos(FEMdata.b_alpha(beam{e})); cb = cos(FEMdata.b_beta(beam{e})); sb = sin(FEMdata.b_beta(beam{e})); cg = cos(FEMdata.b_gamma(beam{e})); sg = sin(FEMdata.b_gamma(beam{e}));
+    sa = sin(b_alpha(beam{e})); ca = cos(b_alpha(beam{e})); cb = cos(b_beta(beam{e})); sb = sin(b_beta(beam{e})); cg = cos(b_gamma(beam{e})); sg = sin(b_gamma(beam{e}));
     R0{e} = [cb*ca, ca*sg*sb - cg*sa, sg*sa + cg*ca*sb
              cb*sa, cg*ca + sg*sb*sa, cg*sb*sa - ca*sg
                -sb,            cb*sg,            cg*cb]; % Bryant angles rotation matrix
     T0{e} = zeros(edof);                                 % Compound rotation matrix                
     for n=1:enn
-        if FEMdata.warp_DOF
+        if warp_DOF
             T0{e}(EDOFs{n},EDOFs{n}) = [R0{e} zeros(3,4); zeros(3) R0{e} zeros(3,1); zeros(1,6) 1];
         else
             T0{e}(EDOFs{n},EDOFs{n}) = [R0{e} zeros(3); zeros(3) R0{e}];

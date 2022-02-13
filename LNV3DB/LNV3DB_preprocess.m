@@ -79,6 +79,8 @@ if FEMdata.elem_connect == "unsequenced"
     end
 elseif FEMdata.elem_connect ~= "sequenced" && FEMdata.elem_connect ~= "unsequenced"
     error('Specify elem_connect as sequenced or unsequenced');
+elseif ~exist('elem_nodes','var')
+    FEMdata.elem_nodes = [];
 end
 % Check element number vector
 if size(FEMdata.Ne_b) ~= FEMdata.N_beams

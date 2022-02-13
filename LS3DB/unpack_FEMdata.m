@@ -145,6 +145,42 @@ if isempty(varargin) % Unpack all data
     varargout = {unit_sys,beam_theory,warp_DOF,N_beams,L,b_alpha,b_beta,b_gamma,constitutive_model,Ne_b,element_order,elem_connect,BC_nodes,scale,Ne,N_nodes,Ndof,edof,enn,ndof,elem_nodes,nodes_coords,n_div,EDOFs,DOF_u,DOF_v,DOF_w,DOF_phix,DOF_phiy,DOF_phiz,DOF_dphix,NGP,dirac_delta,Px,Py,Pz,Mx,My,Mz,Pa,Pl,Pt,Tq,Ml,Mt,Bm,Px_of_x,Py_of_x,Pz_of_x,Mx_of_x,My_of_x,Mz_of_x,Pa_of_x,Pl_of_x,Pt_of_x,Tq_of_x,Ml_of_x,Mt_of_x,Bm_of_x,apx,apy,apz,amx,amy,amz,apa,apl,apt,atq,aml,amt,abm,fa_of_x,tq_of_x,ql_of_x,qt_of_x,fx_of_x,mx_of_x,qy_of_x,qz_of_x,bm_of_x,CSx,CSy,CSz,CSu,CSv,CSw,CSt,CSbl,CSbt,CSx_of_x,CSy_of_x,CSz_of_x,CSu_of_x,CSv_of_x,CSw_of_x,CSt_of_x,CSbl_of_x,CSbt_of_x,akx,aky,akz,aku,akv,akw,akt,akbl,akbt,cfl_of_x,cft_of_x,psi,dpsi,d2psi,d3psi,phi,dphi,d2phi,zeta,dzeta,B,B_cf,H_dist,H_psi,H_phi,H_zeta,f_dist_l,f_dist_g,D,D_cf};
 else % Unpack specific data for function
     switch lower(varargin{1})
+          case 'nodelem_vars'
+              % General data
+              warp_DOF = FEMdata.warp_DOF;
+              L = FEMdata.L;
+              b_alpha = FEMdata.b_alpha;
+              b_beta = FEMdata.b_beta;
+              b_gamma = FEMdata.b_gamma;
+              Ne_b = FEMdata.Ne_b;
+              element_order = FEMdata.element_order;
+              elem_connect = FEMdata.elem_connect;
+              elem_nodes = FEMdata.elem_nodes;
+              % Concentrated loads positions
+              apx = FEMdata.loads.apx;
+              apy = FEMdata.loads.apy;
+              apz = FEMdata.loads.apz;
+              amx = FEMdata.loads.amx;
+              amy = FEMdata.loads.amy;
+              amz = FEMdata.loads.amz;
+              apa = FEMdata.loads.apa;
+              apl = FEMdata.loads.apl;
+              apt = FEMdata.loads.apt;
+              atq = FEMdata.loads.atq;
+              aml = FEMdata.loads.aml;
+              amt = FEMdata.loads.amt;
+              abm = FEMdata.loads.abm;
+              % Concentraded sources positions
+              akx = FEMdata.sources.akx;
+              aky = FEMdata.sources.aky;
+              akz = FEMdata.sources.akz;
+              aku = FEMdata.sources.aku;
+              akv = FEMdata.sources.akv;
+              akw = FEMdata.sources.akw;
+              akt = FEMdata.sources.akt;
+              akbl = FEMdata.sources.akbl;
+              akbt = FEMdata.sources.akbt;
+              varargout = {warp_DOF,L,b_alpha,b_beta,b_gamma,Ne_b,element_order,elem_connect,elem_nodes,apx,apy,apz,amx,amy,amz,apa,apl,apt,atq,aml,amt,abm,akx,aky,akz,aku,akv,akw,akt,akbl,akbt};
           case 'global_matrices'
               % General data
               Ne = FEMdata.Ne;
