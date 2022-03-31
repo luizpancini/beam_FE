@@ -32,7 +32,7 @@ for e=1:Ne
     for n=1:enn        
         % Local displacements
         u_interp_fun = @(x) u_interp_fun(x) + u_local(DOF_u(n))*zeta{n}(xi(x));
-        v_interp_fun = @(x) v_interp_fun(x) + u_local(DOF_v(n))*psi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*psi{2*n}(xi(x),L0,Gamy(x));
+        v_interp_fun = @(x) v_interp_fun(x) + u_local(DOF_v(n))*psi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*psi{2*n}(xi(x),L0,Gamy(x));
         w_interp_fun = @(x) w_interp_fun(x) + u_local(DOF_w(n))*psi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*psi{2*n}(xi(x),L0,Gamz(x));
         if warp_DOF
             phix_interp_fun = @(x) phix_interp_fun(x) + u_local(DOF_phix(n))*psi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*psi{2*n}(xi(x),L0,Gamx(x));
@@ -40,17 +40,17 @@ for e=1:Ne
             phix_interp_fun = @(x) phix_interp_fun(x) + u_local(DOF_phix(n))*zeta{n}(xi(x));
         end
         phiy_interp_fun = @(x) phiy_interp_fun(x) + (u_local(DOF_w(n))*phi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*phi{2*n}(xi(x),L0,Gamz(x)));
-        phiz_interp_fun = @(x) phiz_interp_fun(x) + (u_local(DOF_v(n))*phi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*phi{2*n}(xi(x),L0,Gamy(x)));
+        phiz_interp_fun = @(x) phiz_interp_fun(x) - (u_local(DOF_v(n))*phi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*phi{2*n}(xi(x),L0,Gamy(x)));
         % Local derivatives
         du_interp_fun = @(x) du_interp_fun(x) + Jac^-1*(u_local(DOF_u(n))*dzeta{n}(xi(x)));
-        dv_interp_fun = @(x) dv_interp_fun(x) + Jac^-1*(u_local(DOF_v(n))*dpsi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*dpsi{2*n}(xi(x),L0,Gamy(x)));
+        dv_interp_fun = @(x) dv_interp_fun(x) + Jac^-1*(u_local(DOF_v(n))*dpsi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*dpsi{2*n}(xi(x),L0,Gamy(x)));
         dw_interp_fun = @(x) dw_interp_fun(x) + Jac^-1*(u_local(DOF_w(n))*dpsi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*dpsi{2*n}(xi(x),L0,Gamz(x)));
-        d2v_interp_fun = @(x) d2v_interp_fun(x) + Jac^-2*(u_local(DOF_v(n))*d2psi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*d2psi{2*n}(xi(x),L0,Gamy(x)));
+        d2v_interp_fun = @(x) d2v_interp_fun(x) + Jac^-2*(u_local(DOF_v(n))*d2psi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*d2psi{2*n}(xi(x),L0,Gamy(x)));
         d2w_interp_fun = @(x) d2w_interp_fun(x) + Jac^-2*(u_local(DOF_w(n))*d2psi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*d2psi{2*n}(xi(x),L0,Gamz(x)));
-        d3v_interp_fun = @(x) d3v_interp_fun(x) + Jac^-3*(u_local(DOF_v(n))*d3psi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*d3psi{2*n}(xi(x),L0,Gamy(x)));
+        d3v_interp_fun = @(x) d3v_interp_fun(x) + Jac^-3*(u_local(DOF_v(n))*d3psi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*d3psi{2*n}(xi(x),L0,Gamy(x)));
         d3w_interp_fun = @(x) d3w_interp_fun(x) + Jac^-3*(u_local(DOF_w(n))*d3psi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*d3psi{2*n}(xi(x),L0,Gamz(x)));
-        dphiy_interp_fun = @(x) dphiy_interp_fun(x) + Jac^-1*(u_local(DOF_w(n))*dphi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*dphi{2*n}(xi(x),L0,Gamz(x)));
-        dphiz_interp_fun = @(x) dphiz_interp_fun(x) + Jac^-1*(u_local(DOF_v(n))*dphi{2*n-1}(xi(x),L0,Gamy(x)) + u_local(DOF_phiz(n))*dphi{2*n}(xi(x),L0,Gamy(x)));
+        dphiy_interp_fun = @(x) dphiy_interp_fun(x) - Jac^-1*(u_local(DOF_w(n))*dphi{2*n-1}(xi(x),L0,Gamz(x)) + u_local(DOF_phiy(n))*dphi{2*n}(xi(x),L0,Gamz(x)));
+        dphiz_interp_fun = @(x) dphiz_interp_fun(x) - Jac^-1*(u_local(DOF_v(n))*dphi{2*n-1}(xi(x),L0,Gamy(x)) + (-1)*u_local(DOF_phiz(n))*dphi{2*n}(xi(x),L0,Gamy(x)));
         if warp_DOF
             dphix_interp_fun = @(x) dphix_interp_fun(x) - (u_local(DOF_phix(n))*phi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*phi{2*n}(xi(x),L0,Gamx(x)));
             d2phix_interp_fun = @(x) d2phix_interp_fun(x) - Jac^-1*(u_local(DOF_phix(n))*dphi{2*n-1}(xi(x),L0,Gamx(x)) + u_local(DOF_dphix(n))*dphi{2*n}(xi(x),L0,Gamx(x)));
@@ -83,7 +83,7 @@ for e=1:Ne
             Mz_interp_fun = @(x) E(x).*Izz(x).*d2v_interp_fun(x);
         elseif beam_theory == "T"
             Vy_interp_fun = @(x) Ksy(x).*G(x).*A(x).*(phiz_interp_fun(x) - dv_interp_fun(x));
-            Vz_interp_fun = @(x) Ksz(x).*G(x).*A(x).*(phiy_interp_fun(x) + dw_interp_fun(x));
+            Vz_interp_fun = @(x) -Ksz(x).*G(x).*A(x).*(phiy_interp_fun(x) + dw_interp_fun(x));
             My_interp_fun = @(x) E(x).*Iyy(x).*dphiy_interp_fun(x);
             Mz_interp_fun = @(x) E(x).*Izz(x).*dphiz_interp_fun(x);
         end
@@ -107,9 +107,9 @@ for e=1:Ne
             kappa_y = @(x) d2w_interp_fun(x);
             kappa_z = @(x) d2v_interp_fun(x);
         elseif beam_theory == "T"
-            gamma_y = @(x) (phiz_interp_fun(x) - dv_interp_fun(x));
+            gamma_y = @(x) -(phiz_interp_fun(x) - dv_interp_fun(x));
             gamma_z = @(x) (phiy_interp_fun(x) + dw_interp_fun(x));
-            kappa_y = @(x) dphiy_interp_fun(x);
+            kappa_y = @(x) -dphiy_interp_fun(x);
             kappa_z = @(x) dphiz_interp_fun(x);
         end
         % Set strains vector

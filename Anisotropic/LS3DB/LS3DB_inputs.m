@@ -50,6 +50,7 @@ props.C_aniso{1} = @(x) [EA(x)       0      0      0             K_ax_oop(x)    
 
 % Concentraded loads and sources - in the local beam coordinate (x)
 % These are inputs in the format: load{beam} = [vector of loads]; load_position{beam} = [vector of loads positions]
+Py{1} = P0;    apy{1} = L0; 
 Pz{1} = P0;    apz{1} = L0; 
 % Option for warping DOF (1 for true or 0 for false)
 warp_DOF = 0;
