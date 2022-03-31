@@ -104,7 +104,7 @@ for e=1:Ne
         if beam_theory == "EB"
             gamma_y = @(x) indexat(elem_C(x),6,6)/indexat(elem_C(x),2,2).*d3v_interp_fun(x);
             gamma_z = @(x) indexat(elem_C(x),5,5)/indexat(elem_C(x),3,3).*d3w_interp_fun(x);
-            kappa_y = @(x) d2w_interp_fun(x);
+            kappa_y = @(x) -d2w_interp_fun(x);
             kappa_z = @(x) d2v_interp_fun(x);
         elseif beam_theory == "T"
             gamma_y = @(x) -(phiz_interp_fun(x) - dv_interp_fun(x));

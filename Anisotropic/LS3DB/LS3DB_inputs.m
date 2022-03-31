@@ -7,7 +7,7 @@ close all
 % Unit system
 unit_sys = "SI-N.m";  % Choose between SI-N.m, SI-kN.m, E-lb.in, E-lb.ft
 % Beam theory
-beam_theory = "T";    % Choose between "EB" (Euler-Bernoulli) or "T" (Timoshenko)
+beam_theory = "EB";    % Choose between "EB" (Euler-Bernoulli) or "T" (Timoshenko)
 % Problem parameters 
 L0 = 1; E0 = 200e9; nu = 0.3; G0 = E0/(2*(1+nu));
 b = 0.01; H = 0.01; A0 = b*H; Iyy0 = b*H^3/12; Izz0 = H*b^3/12; Ks0y = 5/6; Ks0z = 5/6;
